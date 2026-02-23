@@ -98,7 +98,7 @@ export default function AnalyticsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* --- CARD 1: PIE CHART SPENDING --- */}
-        <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm">
+        <div className="bg-white p-6 rounded-4xl border border-slate-100 shadow-sm">
           <div className="flex items-center gap-2 mb-6">
             <PieIcon className="text-blue-600" size={20} />
             <h2 className="font-bold text-lg text-slate-800">
@@ -144,7 +144,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* --- CARD 2: TREND BAR CHART --- */}
-        <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm">
+        <div className="bg-white p-6 rounded-4xl border border-slate-100 shadow-sm">
           <div className="flex items-center gap-2 mb-6">
             <BarChart3 className="text-blue-600" size={20} />
             <h2 className="font-bold text-lg text-slate-800">
@@ -184,7 +184,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* --- LIST: TOP SPENDING --- */}
-      <section className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
+      <section className="bg-white p-8 rounded-4xl border border-slate-100 shadow-sm">
         <h2 className="font-bold text-xl mb-6 text-slate-800">
           Spending Details
         </h2>

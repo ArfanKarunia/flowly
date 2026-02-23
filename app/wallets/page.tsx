@@ -51,7 +51,7 @@ export default function WalletsPage() {
       {/* Daftar Kartu Dompet */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {wallets.map((wallet) => (
-          <div key={wallet.id} className="bg-white border p-6 rounded-[32px] shadow-sm">
+          <div key={wallet.id} className="bg-white border p-6 rounded-4xl shadow-sm">
             <p className="text-slate-400 text-xs font-bold uppercase">{wallet.name}</p>
             <h2 className="text-2xl font-bold">Rp{Number(wallet.balance).toLocaleString('id-ID')}</h2>
           </div>
@@ -60,7 +60,7 @@ export default function WalletsPage() {
 
       {/* MODAL TAMBAH DOMPET (Simple) */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[70] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-70 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white p-6 rounded-3xl w-full max-w-sm">
             <div className="flex justify-between mb-4">
               <h2 className="font-bold">New Wallet</h2>

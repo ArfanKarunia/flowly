@@ -136,7 +136,7 @@ export default function TransactionModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-60 flex items-end md:items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div className="bg-white text-slate-900 w-full max-w-md rounded-t-3xl md:rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-8 duration-300">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-slate-900">New Flow</h2>
@@ -201,7 +201,7 @@ export default function TransactionModal({
                     key={cat.id}
                     type="button"
                     onClick={() => setSelectedCategoryId(cat.id)}
-                    className={`shrink-0 flex flex-col items-center justify-center min-w-[76px] h-[76px] rounded-2xl border-2 transition-all snap-start
+                    className={`shrink-0 flex flex-col items-center justify-center min-w-19 h-19 rounded-2xl border-2 transition-all snap-start
                       ${
                         selectedCategoryId === cat.id
                           ? "border-blue-500 bg-blue-50 shadow-md scale-[1.08] relative z-10"

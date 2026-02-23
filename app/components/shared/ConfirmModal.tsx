@@ -16,8 +16,8 @@ export default function ConfirmModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-sm rounded-[32px] p-8 shadow-2xl animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-sm rounded-4xl p-8 shadow-2xl animate-in zoom-in-95 duration-200">
         <div className="flex flex-col items-center text-center">
           {/* Icon Section */}
           <div className={`w-16 h-16 ${danger ? 'bg-rose-50 text-rose-500' : 'bg-blue-50 text-blue-500'} rounded-full flex items-center justify-center mb-6`}>
