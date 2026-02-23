@@ -1,17 +1,18 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "./components/shared/ClientLayout";
 import { Wallet } from "lucide-react";
 
+export const viewport: Viewport = {
+  themeColor: "#2563eb",
+};
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: 'Flowly - Track your flows, effortlessly.',
   description: 'A modern and effortless way to track your personal income and expenses.',
-  icons: {
-    icon: '/icon.png', 
-  },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({

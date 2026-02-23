@@ -1,0 +1,21 @@
+{
+  "name": "Flowly",
+  "short_name": "Flowly",
+  "description": "Track your flows, effortlessly.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/app/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/app/assets/logoflowly2.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
