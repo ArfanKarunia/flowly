@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   title: 'Flowly - Track your flows, effortlessly.',
   description: 'A modern and effortless way to track your personal income and expenses.',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/icon.png', 
+    apple: '/apple-icon.png', 
+  },
 };
 
 export default function RootLayout({
