@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
 import ConfirmModal from "./components/shared/ConfirmModal";
 import { COLORS } from "./constants/colors"; 
+import Link from "next/link";
 
 export default function Home() {
   const { balance, income, expense, transactions, allWallets, refresh } = useFlowly();
@@ -108,45 +109,53 @@ export default function Home() {
         </div>
       )}
 
-      {/* Recent Flows Section */}
+      {/* --- Today's Flows Section --- */}
       <section className={`${COLORS.card} p-2 md:p-6 rounded-3xl border md:shadow-sm`}>
-        <h2 className={`font-bold text-xl mb-6 px-4 ${COLORS.text.main}`}>Recent Flows</h2>
+        <div className="flex items-center justify-between mb-6 px-4">
+          <h2 className={`font-bold text-xl ${COLORS.text.main}`}>Today's Flows</h2>
+          <Link href="/history" className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors">
+            View All History ➔
+          </Link>
+        </div>
+        
         <div className="space-y-1">
-          {transactions
-            .filter((t: any) => !selectedWallet || t.account_id === selectedWallet.id)
-            .map((t: any) => (
-              <div
-                key={t.id}
-                className={`group flex items-center justify-between p-4 ${COLORS.hover} rounded-2xl transition-all`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="text-2xl bg-slate-50 dark:bg-slate-800 w-12 h-12 flex items-center justify-center rounded-xl">
-                    {t.categories?.icon || (t.transaction_type === "income" ? "🤑" : "💸")}
+          {transactions.filter((t: any) => !selectedWallet || t.account_id === selectedWallet.id).length === 0 ? (
+            <div className="py-8 text-center">
+              <p className={COLORS.text.muted}>Belum ada transaksi hari ini. Yuk catat flow pertamamu!</p>
+            </div>
+          ) : (
+            transactions
+              .filter((t: any) => !selectedWallet || t.account_id === selectedWallet.id)
+              .map((t: any) => (
+                <div key={t.id} className={`group flex items-center justify-between p-4 ${COLORS.hover} rounded-2xl transition-all`}>
+                  <div className="flex items-center gap-4">
+                    <div className="text-2xl bg-slate-50 dark:bg-slate-800 w-12 h-12 flex items-center justify-center rounded-xl">
+                      {t.categories?.icon || (t.transaction_type === "income" ? "🤑" : "💸")}
+                    </div>
+                    <div>
+                      <p className={`font-bold text-sm ${COLORS.text.main}`}>{t.note || "No Note"}</p>
+                      <p className={`text-xs ${COLORS.text.muted}`}>
+                        {new Date(t.transaction_date).toLocaleDateString("id-ID", { 
+                          weekday: "short", day: "numeric", month: "short" 
+                        })}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className={`font-bold text-sm ${COLORS.text.main}`}>{t.note || "No Note"}</p>
-                    <p className={`text-xs ${COLORS.text.muted}`}>
-                      {new Date(t.transaction_date).toLocaleDateString("id-ID", { 
-                        weekday: "short", day: "numeric", month: "short" 
-                      })}
+
+                  <div className="flex items-center gap-4">
+                    <p className={`font-bold ${t.transaction_type === "expense" ? "text-rose-500" : "text-emerald-500"}`}>
+                      {t.transaction_type === "expense" ? "-" : "+"}Rp{Number(t.amount).toLocaleString("id-ID")}
                     </p>
+                    <button
+                      onClick={() => handleDeleteTrigger(t)}
+                      className="text-slate-300 dark:text-slate-600 hover:text-rose-500 transition-colors p-2 md:opacity-0 group-hover:opacity-100"
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-4">
-                  <p className={`font-bold ${t.transaction_type === "expense" ? "text-rose-500" : "text-emerald-500"}`}>
-                    {t.transaction_type === "expense" ? "-" : "+"}Rp{Number(t.amount).toLocaleString("id-ID")}
-                  </p>
-
-                  <button
-                    onClick={() => handleDeleteTrigger(t)}
-                    className="text-slate-300 dark:text-slate-600 hover:text-rose-500 transition-colors p-2 md:opacity-0 group-hover:opacity-100"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))
+          )}
         </div>
       </section>
 
