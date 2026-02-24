@@ -121,7 +121,7 @@ export default function Home() {
         <div className="space-y-1">
           {transactions.filter((t: any) => !selectedWallet || t.account_id === selectedWallet.id).length === 0 ? (
             <div className="py-8 text-center">
-              <p className={COLORS.text.muted}>Belum ada transaksi hari ini. Yuk catat flow pertamamu!</p>
+              <p className={COLORS.text.muted}>There are no transactions today. Let's record your first flow!</p>
             </div>
           ) : (
             transactions
