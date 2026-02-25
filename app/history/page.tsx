@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { ChevronLeft, Trash2, CalendarDays } from "lucide-react";
+import { ChevronLeft, Trash2, CalendarDays, Wallet } from "lucide-react";
 import Link from "next/link";
 import ConfirmModal from "../components/shared/ConfirmModal";
 import { COLORS } from "../constants/colors";
@@ -26,15 +26,16 @@ export default function HistoryPage() {
     const from = pageNumber * ITEMS_PER_PAGE;
     const to = from + ITEMS_PER_PAGE - 1;
 
+    // Tambahkan accounts(name, icon) agar data dompet ikut terambil
     const { data } = await supabase
       .from("transactions")
-      .select("*, categories(name, icon)")
+      .select("*, categories(name, icon), accounts(name, icon)") 
       .order("transaction_date", { ascending: false })
       .order("created_at", { ascending: false })
       .range(from, to);
 
     if (data) {
-      if (data.length < ITEMS_PER_PAGE) setHasMore(false); // Kalau datanya kurang dari 20, berarti mentok
+      if (data.length < ITEMS_PER_PAGE) setHasMore(false); 
       
       if (isLoadMore) {
         setTransactions(prev => [...prev, ...data]);
@@ -48,6 +49,7 @@ export default function HistoryPage() {
 
   useEffect(() => {
     fetchHistory(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLoadMore = () => {
@@ -123,18 +125,28 @@ export default function HistoryPage() {
                 {groupedTransactions[date].map((t: any, index: number) => (
                   <div key={t.id} className={`group flex items-center justify-between p-4 ${COLORS.hover} transition-all ${index !== groupedTransactions[date].length - 1 ? 'border-b border-slate-100 dark:border-slate-800' : ''}`}>
                     <div className="flex items-center gap-4">
-                      <div className="text-2xl bg-slate-50 dark:bg-slate-800 w-12 h-12 flex items-center justify-center rounded-xl">
+                      <div className="text-2xl bg-slate-50 dark:bg-slate-800 w-12 h-12 flex items-center justify-center rounded-xl shrink-0">
                         {t.categories?.icon || (t.transaction_type === "income" ? "🤑" : "💸")}
                       </div>
                       <div>
-                        <p className={`font-bold text-sm ${COLORS.text.main}`}>{t.note || "No Note"}</p>
-                        <p className={`text-[11px] font-bold mt-0.5 ${COLORS.text.muted} uppercase`}>
-                          {t.categories?.name || "Uncategorized"}
-                        </p>
+                        <p className={`font-bold text-sm ${COLORS.text.main} line-clamp-1`}>{t.note || "No Note"}</p>
+                        
+                        {/* --- BAGIAN YANG DI-UPDATE: Menampilkan Kategori + Dompet --- */}
+                        <div className="flex items-center gap-2 mt-1 flex-wrap">
+                          <span className={`text-[10px] font-bold ${COLORS.text.muted} uppercase bg-slate-100 dark:bg-slate-800/50 px-2 py-0.5 rounded-md`}>
+                            {t.categories?.name || "Uncategorized"}
+                          </span>
+                          <span className={`text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1`}>
+                            <span className="opacity-70">{t.accounts?.icon || <Wallet size={12}/>}</span> 
+                            {t.accounts?.name || "Unknown Wallet"}
+                          </span>
+                        </div>
+                        {/* ----------------------------------------------------------- */}
+
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 shrink-0">
                       <p className={`font-bold ${t.transaction_type === "expense" ? "text-rose-500" : "text-emerald-500"}`}>
                         {t.transaction_type === "expense" ? "-" : "+"}Rp{Number(t.amount).toLocaleString("id-ID")}
                       </p>
