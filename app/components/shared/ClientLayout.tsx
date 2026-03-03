@@ -8,6 +8,8 @@ import {
   LogOut,
   User as UserIcon,
   ChevronDown,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 import { COLORS } from "../../constants/colors";
@@ -18,6 +20,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import EditProfileModal from "./EditProfileModal";
+import { useTheme } from "next-themes";
 
 export default function ClientLayout({
   children,
@@ -25,6 +28,8 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const supabase = createClient();
+  const { theme, setTheme } = useTheme();
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { refresh } = useFlowly();
@@ -32,6 +37,12 @@ export default function ClientLayout({
   const [user, setUser] = useState<any>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   
+  // State mounted untuk menghindari hydration error next-themes
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const fetchUser = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -111,60 +122,82 @@ export default function ClientLayout({
           <header className={`w-full ${COLORS.nav} backdrop-blur-md border-b p-4 flex justify-between md:justify-end items-center sticky top-0 z-40 transition-colors`}>
             <h1 className="text-xl font-bold text-blue-600 md:hidden">Flowly.</h1>
 
-            <div className="relative">
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className={`flex items-center gap-3 p-2 ${COLORS.hover} rounded-2xl transition-all focus:outline-none`}
-              >
-                <div className="hidden md:flex flex-col text-right">
-                  <span className={`text-sm font-bold ${COLORS.text.main}`}>
-                    {user?.user_metadata?.full_name || "Sign In First"}
-                  </span>
-                  <span className={`text-xs ${COLORS.text.muted}`}>
-                    {user?.email || "Loading..."}
-                  </span>
-                </div>
-                <img
-                  src={user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user?.user_metadata?.full_name || "User"}&background=eff6ff&color=2563eb`}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
-                />
-                <ChevronDown size={16} className={`${COLORS.text.muted} hidden md:block`} />
-              </button>
-
-              {isDropdownOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)}></div>
-                  <div className={`absolute right-0 mt-2 w-56 ${COLORS.card} border rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2`}>
-                    <div className="p-4 border-b border-slate-50 dark:border-slate-800 md:hidden bg-slate-50 dark:bg-slate-800/50">
-                      <p className={`text-sm font-bold truncate ${COLORS.text.main}`}>
-                        {user?.user_metadata?.full_name || "My Account"}
-                      </p>
-                      <p className={`text-xs ${COLORS.text.muted} truncate`}>
-                        {user?.email || "Loading..."}
-                      </p>
-                    </div>
-
-                    <div className="p-2">
-                      <button 
-                        onClick={() => {
-                          setIsDropdownOpen(false); 
-                          setIsProfileModalOpen(true); 
-                        }}
-                        className={`w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-medium ${COLORS.text.main} ${COLORS.hover} rounded-xl transition-all`}
-                      >
-                        <UserIcon size={18} /> Edit Profile
-                      </button>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all mt-1"
-                      >
-                        <LogOut size={18} /> Sign Out
-                      </button>
-                    </div>
-                  </div>
-                </>
+            <div className="flex items-center gap-2">
+              {/* --- TOGGLE THEME --- */}
+              {mounted && (
+                <button
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className={`p-2 rounded-xl ${COLORS.hover} transition-all active:scale-95`}
+                  aria-label="Toggle Theme"
+                >
+                  {theme === "dark" ? (
+                    <Sun size={20} className="text-amber-400" />
+                  ) : (
+                    <Moon size={20} className="text-indigo-500" />
+                  )}
+                </button>
               )}
+
+              {/* --- DROPDOWN USER --- */}
+              <div className="relative">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className={`flex items-center gap-3 p-2 ${COLORS.hover} rounded-2xl transition-all focus:outline-none`}
+                >
+                  <div className="hidden md:flex flex-col text-right">
+                    <span className={`text-sm font-bold ${COLORS.text.main}`}>
+                      {user?.user_metadata?.full_name || "Sign In First"}
+                    </span>
+                    <span className={`text-xs ${COLORS.text.muted}`}>
+                      {user?.email || "Loading..."}
+                    </span>
+                  </div>
+                  <img
+                    src={user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user?.user_metadata?.full_name || "User"}&background=eff6ff&color=2563eb`}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${user?.user_metadata?.full_name || "User"}&background=eff6ff&color=2563eb`;
+                    }}
+                  />
+                  <ChevronDown size={16} className={`${COLORS.text.muted} hidden md:block`} />
+                </button>
+
+                {isDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)}></div>
+                    <div className={`absolute right-0 mt-2 w-56 ${COLORS.card} border rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2`}>
+                      <div className="p-4 border-b border-slate-50 dark:border-slate-800 md:hidden bg-slate-50 dark:bg-slate-800/50">
+                        <p className={`text-sm font-bold truncate ${COLORS.text.main}`}>
+                          {user?.user_metadata?.full_name || "My Account"}
+                        </p>
+                        <p className={`text-xs ${COLORS.text.muted} truncate`}>
+                          {user?.email || "Loading..."}
+                        </p>
+                      </div>
+
+                      <div className="p-2">
+                        <button 
+                          onClick={() => {
+                            setIsDropdownOpen(false); 
+                            setIsProfileModalOpen(true); 
+                          }}
+                          className={`w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-medium ${COLORS.text.main} ${COLORS.hover} rounded-xl transition-all`}
+                        >
+                          <UserIcon size={18} /> Edit Profile
+                        </button>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all mt-1"
+                        >
+                          <LogOut size={18} /> Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </header>
 
